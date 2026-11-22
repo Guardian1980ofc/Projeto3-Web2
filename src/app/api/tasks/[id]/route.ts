@@ -3,8 +3,9 @@ import connectDB from "@/lib/mongodb";
 import Task from "@/models/Task";
 import { auth } from "@/lib/auth";
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const session = await auth();
     if (!session?.user) return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
 
@@ -13,7 +14,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 
     // Garante que o usuário só altere a PRÓPRIA tarefa
     const task = await Task.findOneAndUpdate(
-      { _id: params.id, userId: (session.user as any).id },
+      { _id: id, userId: (session.user as any).id },
       { title, description, status },
       { new: true, runValidators: true }
     );
@@ -26,8 +27,9 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const session = await auth();
     if (!session?.user) return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
 
@@ -35,7 +37,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     
     // Garante que o usuário só delete a PRÓPRIA tarefa
     const task = await Task.findOneAndDelete({ 
-      _id: params.id, 
+      _id: id, 
       userId: (session.user as any).id 
     });
 

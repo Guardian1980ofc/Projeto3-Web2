@@ -1,0 +1,1 @@
+export default function Loading() { return <main className="grid min-h-screen place-items-center bg-slate-50"><div className="text-center"><div className="mx-auto size-9 animate-spin rounded-full border-4 border-indigo-100 border-t-indigo-600"/><p className="mt-4 text-sm text-slate-500">Carregando TaskFlow...</p></div></main>; }
